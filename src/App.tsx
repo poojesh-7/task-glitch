@@ -9,7 +9,7 @@ import ChartsDashboard from '@/components/ChartsDashboard';
 import AnalyticsDashboard from '@/components/AnalyticsDashboard';
 import ActivityLog, { ActivityItem } from '@/components/ActivityLog';
 import { downloadCSV, toCSV } from '@/utils/csv';
-import type { Task } from '@/types';
+import type { Task, TaskFormPayload } from '@/types';
 import {
   computeAverageROI,
   computePerformanceGrade,
@@ -41,10 +41,14 @@ function AppContent() {
     });
   }, [derivedSorted, q, fStatus, fPriority]);
 
-  const handleAdd = useCallback((payload: Omit<Task, 'id'>) => {
+  const handleAdd = useCallback((payload: TaskFormPayload) => {
     addTask(payload);
-    setActivity(prev => [createActivity('add', `Added: ${payload.title}`), ...prev].slice(0, 50));
+    setActivity(prev => [
+      createActivity('add', `Added: ${payload.title}`),
+      ...prev,
+    ].slice(0, 50));
   }, [addTask, createActivity]);
+
   const handleUpdate = useCallback((id: string, patch: Partial<Task>) => {
     updateTask(id, patch);
     setActivity(prev => [createActivity('update', `Updated: ${Object.keys(patch).join(', ')}`), ...prev].slice(0, 50));
